@@ -15,7 +15,10 @@
   "scripts": {
     "test": "xo",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "concurrently \"npm run watch\" \"npm run nodemon\"",
+    "nodemon": "nodemon lib/index.js -w lib",
+    "build": "babel src -d lib",
+    "watch": "babel src -d lib -w"
   },
   "files": [
     "index.js"
@@ -24,7 +27,8 @@
     ""
   ],
   "devDependencies": {
-    "nodemon": "^1.9.2",
+    "concurrently": "^2.2.0",
+    "nodemon": "^1.10.0",
     "xo": "latest"
   },
   "xo": {
@@ -32,6 +36,15 @@
     "space": 2
   },
   "dependencies": {
-    "koa": "^1.2.0"
+    "babel-runtime": "^6.9.2",
+    "bcrypt": "^0.8.7",
+    "joi": "^9.0.4",
+    "koa": "^2.0.0-alpha.4",
+    "koa-bodyparser": "^3.1.0",
+    "koa-router": "^7.0.1",
+    "mongoose": "^4.5.7",
+    "mongoose-timestamp": "^0.6.0",
+    "mongoose-unique-validator": "^1.0.2",
+    "pify": "^2.3.0"
   }
 }
