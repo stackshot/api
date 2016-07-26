@@ -1,5 +1,4 @@
 import Koa from 'koa'
-import mongoose from 'mongoose'
 import bodyparser from 'koa-bodyparser'
 
 import './db'
