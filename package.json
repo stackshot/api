@@ -41,6 +41,8 @@
     "joi": "^9.0.4",
     "koa": "^2.0.0-alpha.4",
     "koa-bodyparser": "^3.1.0",
+    "koa-convert": "^1.2.0",
+    "koa-jwt": "^1.2.0",
     "koa-router": "^7.0.1",
     "mongoose": "^4.5.7",
     "mongoose-timestamp": "^0.6.0",
