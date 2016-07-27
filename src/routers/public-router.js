@@ -1,6 +1,8 @@
 import Router from 'koa-router'
 import joi from 'joi'
 import jwt from 'koa-jwt'
+import uuid from 'node-uuid'
+import picker from 'object-picker'
 import User from '../models/user'
 import {
   encrypt,
@@ -8,9 +10,9 @@ import {
   privateKey
 } from '../common/helpers'
 
-const publicRouter = new Router()
+const router = new Router()
 
-publicRouter.post('/auth/signup', async ctx => {
+router.post('/auth/signup', async ctx => {
   let userData = {
     username: ctx.request.body.username,
     email: ctx.request.body.email,
@@ -25,15 +27,22 @@ publicRouter.post('/auth/signup', async ctx => {
     }))
 
     userData.password = await encrypt.hash(userData.password, 10)
-    const user = new User(userData)
+    userData.apiKey = uuid.v4()
 
-    ctx.body = await user.save()
+    const user = new User(userData)
+    await user.save()
+
+    const token = jwt.sign({apiKey: userData.apiKey}, privateKey, {algorithm: 'RS256'})
+    ctx.body = {
+      token,
+      user: picker(user.toObject(), 'username avatar createdAt updatedAt')
+    }
   } catch (e) {
     ctx.body = e
   }
 })
 
-publicRouter.post('/auth/signin', async ctx => {
+router.post('/auth/signin', async ctx => {
   let userData = {
     // username or email
     account: ctx.request.body.account,
@@ -71,9 +80,11 @@ publicRouter.post('/auth/signin', async ctx => {
     }
   }
 
-  const token = jwt.sign(user, privateKey, {algorithm: 'RS256'})
-
-  ctx.body = {token}
+  const token = jwt.sign({apiKey: user.apiKey}, privateKey, {algorithm: 'RS256'})
+  ctx.body = {
+    token,
+    user: picker(user.toObject(), 'username avatar createdAt updatedAt')
+  }
 })
 
-export default publicRouter
+export default router

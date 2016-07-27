@@ -47,6 +47,8 @@
     "mongoose": "^4.5.7",
     "mongoose-timestamp": "^0.6.0",
     "mongoose-unique-validator": "^1.0.2",
+    "node-uuid": "^1.4.7",
+    "object-picker": "^0.1.0",
     "pify": "^2.3.0"
   }
 }
