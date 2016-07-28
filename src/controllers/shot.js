@@ -37,3 +37,18 @@ export async function addShot(ctx) {
     ctx.body = e
   }
 }
+
+export async function shots(ctx) {
+  const {skip = 0, limit = 20} = ctx.query
+  const shots = await Shot
+    .find()
+    .sort('-createdAt')
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10))
+    .populate('user', 'username avatar')
+    .exec()
+
+  ctx.body = {
+    data: shots
+  }
+}
