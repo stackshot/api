@@ -6,11 +6,10 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  sourceName: {
-    // eg: '灵能百分百'
-    type: String
-  },
   images: {
+    type: Array
+  },
+  tags: {
     type: Array
   },
   commentCount: {

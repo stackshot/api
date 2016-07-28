@@ -16,17 +16,17 @@ export async function addShot(ctx) {
     return
   }
 
+  let shotData = {
+    images: ctx.request.body.images,
+    tags: ctx.request.body.tags || []
+  }
   try {
-    let shotData = {
-      sourceName: ctx.request.body.sourceName,
-      images: ctx.request.body.images
-    }
     shotData = await validate(shotData, joi.object().keys({
-      sourceName: joi.string().optional(),
       images: joi.array().items(joi.object().keys({
         url: joi.string().required(),
         description: joi.any().optional()
-      }).required()).required()
+      }).required()).required(),
+      tags: joi.array().items(joi.string())
     }))
     shotData.user = user
 
