@@ -2,6 +2,7 @@ import Koa from 'koa'
 import bodyparser from 'koa-bodyparser'
 import jwt from 'koa-jwt'
 import convert from 'koa-convert'
+import cors from 'kcors'
 import {publicKey} from './common/helpers'
 
 import './db'
@@ -11,6 +12,7 @@ import privateRouter from './routers/private-router'
 
 const app = new Koa()
 
+app.use(convert(cors()))
 app.use(bodyparser())
 app.use(publicRouter.routes())
 app.use(publicRouter.allowedMethods())
