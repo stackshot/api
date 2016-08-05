@@ -1,7 +1,5 @@
 import fs from 'fs'
 import busboy from 'async-busboy'
-
-import pify from 'pify'
 import random from 'randomstring'
 import mime from 'mime'
 import qn from '../common/qn'
