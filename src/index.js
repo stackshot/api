@@ -5,6 +5,7 @@ import convert from 'koa-convert'
 import cors from 'kcors'
 import {publicKey} from './common/helpers'
 
+import './env'
 import './db'
 
 import publicRouter from './routers/public-router'
