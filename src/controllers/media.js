@@ -22,8 +22,8 @@ function uploadImageStream(file) {
 }
 
 export async function uploadImage(ctx) {
-  const {files} = await busboy(ctx.req)
   try {
+    const {files} = await busboy(ctx.req)
     const res = await Promise.all(files.map(file => {
       return uploadImageStream(file)
     }))
