@@ -1,7 +1,7 @@
 import joi from 'joi'
 import jwt from 'koa-jwt'
 import uuid from 'node-uuid'
-import picker from 'object-picker'
+import _ from 'lodash'
 import User from '../models/user'
 import {
   encrypt,
@@ -32,7 +32,7 @@ export async function signup(ctx) {
     const token = jwt.sign({apiKey: userData.apiKey}, privateKey, {algorithm: 'RS256'})
     ctx.body = {
       token,
-      user: picker(user.toObject(), 'username avatar createdAt updatedAt')
+      user: _.pick(user.toObject(), ['username', 'avatar', 'createdAt', 'updatedAt'])
     }
   } catch (e) {
     ctx.body = e
@@ -80,6 +80,6 @@ export async function signin(ctx) {
   const token = jwt.sign({apiKey: user.apiKey}, privateKey, {algorithm: 'RS256'})
   ctx.body = {
     token,
-    user: picker(user.toObject(), 'username avatar createdAt updatedAt')
+    user: _.pick(user.toObject(), ['username', 'avatar', 'createdAt', 'updatedAt'])
   }
 }
