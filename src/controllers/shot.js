@@ -1,18 +1,15 @@
 import joi from 'joi'
 import User from '../models/user'
 import Shot from '../models/shot'
-import { validate } from '../common/helpers'
+import { validate, sendError } from '../common/helpers'
 
 export async function addShot(ctx) {
-  const user = await User.findOne({ apiKey: ctx.state.user.apiKey })
+  const user = await User.findOne({ _id: ctx.state.user._id })
     .select('username')
     .exec()
 
   if (!user) {
-    ctx.body = {
-      error: 'User not found'
-    }
-    return
+    return sendError(ctx, 'User not found', 403)
   }
 
   let shotData = {
@@ -43,8 +40,7 @@ export async function addShot(ctx) {
     const shot = new Shot(shotData)
     ctx.body = await shot.save()
   } catch (err) {
-    console.log(err.stack)
-    ctx.body = err
+    sendError(ctx, err)
   }
 }
 

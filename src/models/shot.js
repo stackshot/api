@@ -12,11 +12,11 @@ const schema = new Schema({
   tags: {
     type: Array
   },
-  commentCount: {
+  comments: {
     type: Number,
     default: 0
   },
-  likeCount: {
+  likes: {
     type: Number,
     default: 0
   }

@@ -38,9 +38,13 @@ export function generateJWT(user) {
 
 export function sendError(ctx, err, status) {
   ctx.status = status || err.statusCode || err.status || 500
-  ctx.body = {
-    message: typeof err === 'string'
-      ? err
-      : env === 'production' ? err.message : err.stack
+  if (err.name === 'ValidationError') {
+    ctx.body = err
+  } else {
+    ctx.body = {
+      message: typeof err === 'string'
+        ? err
+        : env === 'production' ? err.message : err.stack
+    }
   }
 }
