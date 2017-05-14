@@ -1,9 +1,9 @@
 import joi from 'joi'
-import jwt from 'koa-jwt'
+import jwt from 'jsonwebtoken'
 import uuid from 'node-uuid'
 import _ from 'lodash'
 import User from '../models/user'
-import { encrypt, validate, privateKey } from '../common/helpers'
+import { encrypt, validate, generateJWT, sendError } from '../common/helpers'
 
 export async function signup(ctx) {
   let userData = {
@@ -23,25 +23,16 @@ export async function signup(ctx) {
     )
 
     userData.password = await encrypt.hash(userData.password, 10)
-    userData.apiKey = uuid.v4()
 
     const user = new User(userData)
     await user.save()
 
-    const token = jwt.sign({ apiKey: userData.apiKey }, privateKey, {
-      algorithm: 'RS256'
-    })
     ctx.body = {
-      token,
-      user: _.pick(user.toObject(), [
-        'username',
-        'avatar',
-        'createdAt',
-        'updatedAt'
-      ])
+      token: generateJWT(user),
+      user: _.omit(user.toObject(), ['password'])
     }
   } catch (err) {
-    ctx.body = err
+    sendError(ctx, err, 401)
   }
 }
 
@@ -61,8 +52,7 @@ export async function signin(ctx) {
       })
     )
   } catch (err) {
-    ctx.body = err
-    return
+    return sendError(ctx, err, 401)
   }
 
   const user = await User.findOne({
@@ -70,10 +60,7 @@ export async function signin(ctx) {
   }).exec()
 
   if (!user) {
-    ctx.body = {
-      error: 'User not found'
-    }
-    return
+    return sendError(ctx, 'User not found', 401)
   }
 
   const isPasswordCorrect = await encrypt.compare(
@@ -82,22 +69,11 @@ export async function signin(ctx) {
   )
 
   if (!isPasswordCorrect) {
-    ctx.body = {
-      error: 'Passoword mismatches'
-    }
-    return
+    return sendError(ctx, 'Passoword mismatches', 401)
   }
 
-  const token = jwt.sign({ apiKey: user.apiKey }, privateKey, {
-    algorithm: 'RS256'
-  })
   ctx.body = {
-    token,
-    user: _.pick(user.toObject(), [
-      'username',
-      'avatar',
-      'createdAt',
-      'updatedAt'
-    ])
+    token: generateJWT(user),
+    user: _.omit(user.toObject(), ['password'])
   }
 }
