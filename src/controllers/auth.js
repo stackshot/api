@@ -3,11 +3,7 @@ import jwt from 'koa-jwt'
 import uuid from 'node-uuid'
 import _ from 'lodash'
 import User from '../models/user'
-import {
-  encrypt,
-  validate,
-  privateKey
-} from '../common/helpers'
+import { encrypt, validate, privateKey } from '../common/helpers'
 
 export async function signup(ctx) {
   let userData = {
@@ -17,11 +13,14 @@ export async function signup(ctx) {
   }
 
   try {
-    userData = await validate(userData, joi.object().keys({
-      username: joi.string().min(2).max(20).required(),
-      email: joi.string().email().required(),
-      password: joi.string().min(6).max(20).required()
-    }))
+    userData = await validate(
+      userData,
+      joi.object().keys({
+        username: joi.string().min(2).max(20).required(),
+        email: joi.string().email().required(),
+        password: joi.string().min(6).max(20).required()
+      })
+    )
 
     userData.password = await encrypt.hash(userData.password, 10)
     userData.apiKey = uuid.v4()
@@ -29,13 +28,20 @@ export async function signup(ctx) {
     const user = new User(userData)
     await user.save()
 
-    const token = jwt.sign({apiKey: userData.apiKey}, privateKey, {algorithm: 'RS256'})
+    const token = jwt.sign({ apiKey: userData.apiKey }, privateKey, {
+      algorithm: 'RS256'
+    })
     ctx.body = {
       token,
-      user: _.pick(user.toObject(), ['username', 'avatar', 'createdAt', 'updatedAt'])
+      user: _.pick(user.toObject(), [
+        'username',
+        'avatar',
+        'createdAt',
+        'updatedAt'
+      ])
     }
-  } catch (e) {
-    ctx.body = e
+  } catch (err) {
+    ctx.body = err
   }
 }
 
@@ -47,39 +53,51 @@ export async function signin(ctx) {
   }
 
   try {
-    userData = await validate(userData, joi.object().keys({
-      account: joi.string().min(2).max(20).required(),
-      password: joi.string().min(6).max(20).required()
-    }))
-  } catch (e) {
-    ctx.body = e
+    userData = await validate(
+      userData,
+      joi.object().keys({
+        account: joi.string().min(2).max(20).required(),
+        password: joi.string().min(6).max(20).required()
+      })
+    )
+  } catch (err) {
+    ctx.body = err
     return
   }
 
   const user = await User.findOne({
-    $or: [
-      {username: userData.account},
-      {email: userData.account}
-    ]
+    $or: [{ username: userData.account }, { email: userData.account }]
   }).exec()
 
   if (!user) {
-    return ctx.body = {
+    ctx.body = {
       error: 'User not found'
     }
+    return
   }
 
-  const isPasswordCorrect = await encrypt.compare(userData.password, user.password)
+  const isPasswordCorrect = await encrypt.compare(
+    userData.password,
+    user.password
+  )
 
   if (!isPasswordCorrect) {
-    return ctx.body = {
+    ctx.body = {
       error: 'Passoword mismatches'
     }
+    return
   }
 
-  const token = jwt.sign({apiKey: user.apiKey}, privateKey, {algorithm: 'RS256'})
+  const token = jwt.sign({ apiKey: user.apiKey }, privateKey, {
+    algorithm: 'RS256'
+  })
   ctx.body = {
     token,
-    user: _.pick(user.toObject(), ['username', 'avatar', 'createdAt', 'updatedAt'])
+    user: _.pick(user.toObject(), [
+      'username',
+      'avatar',
+      'createdAt',
+      'updatedAt'
+    ])
   }
 }

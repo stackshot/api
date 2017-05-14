@@ -1,4 +1,4 @@
-import mongoose, {Schema} from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import timestamp from 'mongoose-timestamp'
 
 const schema = new Schema({

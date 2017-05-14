@@ -13,7 +13,9 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "ava test/**/test-*.js",
+    "test": "ava test/**/test-*.js && npm run lint",
+    "lint": "xo src/**/*.js",
+    "fix": "npm run lint -- --fix",
     "start": "node server.js",
     "dev": "concurrently \"npm run watch\" \"npm run nodemon\"",
     "nodemon": "nodemon server.js -w lib",
@@ -34,13 +36,16 @@
     "babel-plugin-transform-runtime": "^6.12.0",
     "babel-preset-env": "^1.4.0",
     "concurrently": "^3.4.0",
+    "eslint-config-rem": "^3.1.0",
     "node-fetch": "^1.6.0",
     "nodemon": "^1.10.0",
-    "xo": "latest"
+    "xo": "^0.18.2"
   },
   "xo": {
-    "semicolon": false,
-    "space": 2
+    "extends": "rem/prettier",
+    "rules": {
+      "import/prefer-default-export": 0
+    }
   },
   "dependencies": {
     "async-busboy": "^0.5.0",
