@@ -1,6 +1,4 @@
 import joi from 'joi'
-import jwt from 'jsonwebtoken'
-import uuid from 'node-uuid'
 import _ from 'lodash'
 import User from '../models/user'
 import { encrypt, validate, generateJWT, sendError } from '../common/helpers'
