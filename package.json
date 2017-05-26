@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "ava test/**/test-*.js && npm run lint",
-    "lint": "xo src/**/*.js",
+    "lint": "xo",
     "fix": "npm run lint -- --fix",
     "start": "node server.js",
     "dev": "concurrently \"npm run watch\" \"npm run nodemon\"",
