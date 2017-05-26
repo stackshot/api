@@ -1,7 +1,7 @@
 import joi from 'joi'
 import User from '../models/user'
 import Shot from '../models/shot'
-import { validate, sendError } from '../common/helpers'
+import { validate, sendError, getPageOptions } from '../common/helpers'
 
 export async function addShot(ctx) {
   const user = await User.findOne({ _id: ctx.state.user._id })
@@ -45,11 +45,11 @@ export async function addShot(ctx) {
 }
 
 export async function shots(ctx) {
-  const { skip = 0, limit = 20 } = ctx.query
-  const shots = await Shot.find()
+  const { before, limit } = getPageOptions(ctx.query)
+
+  const shots = await Shot.find({ createdAt: { $lt: before } })
     .sort('-createdAt')
-    .skip(parseInt(skip, 10))
-    .limit(parseInt(limit, 10))
+    .limit(limit)
     .populate('user', 'username avatar')
     .exec()
 

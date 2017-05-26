@@ -48,3 +48,9 @@ export function sendError(ctx, err, status) {
     }
   }
 }
+
+export function getPageOptions(query) {
+  const { before = new Date(), limit = 20 } = query
+
+  return { before, limit: parseInt(limit, 10) }
+}
