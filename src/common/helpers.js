@@ -23,21 +23,34 @@ export const encrypt = pify(bcrypt)
 export const validate = pify(joi.validate)
 
 export function generateJWT(user) {
-  return jwt.sign({
-    username: user.username,
-    email: user.email,
-    _id: user._id
-  }, privateKey, {
-    algorithm: 'RS256'
-  })
+  return jwt.sign(
+    {
+      username: user.username,
+      email: user.email,
+      _id: user._id
+    },
+    privateKey,
+    {
+      algorithm: 'RS256'
+    }
+  )
 }
 
 export function sendError(ctx, err, status) {
   ctx.status = status || err.statusCode || err.status || 500
-  ctx.body = {
-    message: typeof err === 'string' ? err :
-      env === 'production' ?
-      err.message :
-      err.stack
+  if (err.name === 'ValidationError') {
+    ctx.body = err
+  } else {
+    ctx.body = {
+      message: typeof err === 'string'
+        ? err
+        : env === 'production' ? err.message : err.stack
+    }
   }
+}
+
+export function getPageOptions(query) {
+  const { before = new Date(), limit = 20 } = query
+
+  return { before, limit: parseInt(limit, 10) }
 }

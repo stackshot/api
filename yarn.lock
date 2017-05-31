@@ -935,6 +935,10 @@ browserslist@^1.4.0:
     caniuse-db "^1.0.30000639"
     electron-to-chromium "^1.2.7"
 
+bson@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.npmjs.org/bson/-/bson-0.1.9.tgz#7528f81ed770e6d630ca8c2ccdf5394a4096db14"
+
 bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
@@ -3494,6 +3498,12 @@ object.omit@^2.0.0:
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
+
+objectid@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/objectid/-/objectid-3.2.1.tgz#a3b7a2b4d65f3a8348ef8497f023069b5cb019de"
+  dependencies:
+    bson "^0.1.9"
 
 observable-to-promise@^0.5.0:
   version "0.5.0"

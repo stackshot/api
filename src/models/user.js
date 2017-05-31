@@ -16,9 +16,6 @@ const schema = new mongoose.Schema({
   },
   password: {
     type: String
-  },
-  apiKey: {
-    type: String
   }
 })
 
