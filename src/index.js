@@ -1,7 +1,6 @@
 import Koa from 'koa'
 import bodyparser from 'koa-bodyparser'
 import jwt from 'koa-jwt'
-import convert from 'koa-convert'
 import cors from 'kcors'
 import { publicKey } from './common/helpers'
 
@@ -13,7 +12,7 @@ import privateRouter from './routers/private-router'
 export default () => {
   const app = new Koa()
 
-  app.use(convert(cors()))
+  app.use(cors())
   app.use(bodyparser())
   app.use(publicRouter.routes())
   app.use(publicRouter.allowedMethods())
@@ -33,12 +32,10 @@ export default () => {
   })
 
   app.use(
-    convert(
-      jwt({
-        secret: publicKey,
-        algorithm: 'RS256'
-      })
-    )
+    jwt({
+      secret: publicKey,
+      algorithm: 'RS256'
+    })
   )
 
   app.use(privateRouter.routes())
